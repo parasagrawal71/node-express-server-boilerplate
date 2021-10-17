@@ -14,4 +14,4 @@ coverage
 # Custom
 dist-src
 logs
-config/env/local.js
+src/config/env/local.js
