@@ -46,6 +46,10 @@ module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhr
     }
 };
 
+/*
+ * ************************************************************************************************************************************************** //
+ */
+
 /**
  * Unauthorized error
  *
@@ -65,13 +69,13 @@ module.exports.createUnauthorizedError = (isFormat = false) => {
 };
 
 /**
- * Required Parameter Error
+ * Required Parameters Error
  *
  */
-module.exports.createRequiredParamError = (missingKey, isFormat = false) => {
+module.exports.createRequiredParamError = (missingKeys, isFormat = false) => {
     const requiredParamError = {
         errorCode: `E_${APP_ID}_REQUIRED_PARAM_MISSING`,
-        message: `Missing input parameter: '${missingKey}'`,
+        message: `Missing input parameters: '${missingKeys}'`,
         statusCode: httpStatus.BAD_REQUEST,
         statusPhrase: httpStatus[httpStatus.BAD_REQUEST],
     };
@@ -84,13 +88,13 @@ module.exports.createRequiredParamError = (missingKey, isFormat = false) => {
 };
 
 /**
- * Invalid Parameter type error
+ * Parameters' invalid type error
  *
  */
-module.exports.createInvalidTypeError = (key, isFormat = false) => {
+module.exports.createInvalidTypeError = (keys, isFormat = false) => {
     const invalidTypeError = {
         errorCode: `E_${APP_ID}_INVALID_PARAM_TYPE`,
-        message: `${key} value is not in required type`,
+        message: `'${keys}' type is invalid`,
         statusCode: httpStatus.BAD_REQUEST,
         statusPhrase: httpStatus[httpStatus.BAD_REQUEST],
     };
@@ -103,13 +107,13 @@ module.exports.createInvalidTypeError = (key, isFormat = false) => {
 };
 
 /**
- * Invalid Parameter format error
+ * Parameters' invalid format error
  *
  */
-module.exports.createInvalidFormatError = (key, isFormat = false) => {
+module.exports.createInvalidFormatError = (keys, isFormat = false) => {
     const invalidFormatError = {
         errorCode: `E_${APP_ID}_INVALID_PARAM_FORMAT`,
-        message: `${key} format doesn't match`,
+        message: `'${keys}' format doesn't match`,
         statusCode: httpStatus.BAD_REQUEST,
         statusPhrase: httpStatus[httpStatus.BAD_REQUEST],
     };
@@ -122,13 +126,13 @@ module.exports.createInvalidFormatError = (key, isFormat = false) => {
 };
 
 /**
- * Invalid Parameter value error
+ * Parameters' invalid value error
  *
  */
-module.exports.createInvalidValueError = (key, isFormat = false) => {
+module.exports.createInvalidValueError = (keys, isFormat = false) => {
     const invalidValueError = {
         errorCode: `E_${APP_ID}_INVALID_PARAM_VALUE`,
-        message: `${key} value is not among defined values`,
+        message: `'${keys}' parameters value is not among defined values`,
         statusCode: httpStatus.BAD_REQUEST,
         statusPhrase: httpStatus[httpStatus.BAD_REQUEST],
     };
@@ -166,7 +170,7 @@ module.exports.createDuplicateValueError = (key, value, isFormat = false) => {
 module.exports.createRecordNotFoundError = (key, value, isFormat = false) => {
     const recordNotFoundError = {
         errorCode: `E_${APP_ID}_RECORD_NOT_FOUND`,
-        message: `Invalid ${key} : ${value}`,
+        message: `Data not found for ${key} = ${value}`,
         statusCode: httpStatus.NOT_FOUND,
         statusPhrase: httpStatus[httpStatus.NOT_FOUND],
     };
