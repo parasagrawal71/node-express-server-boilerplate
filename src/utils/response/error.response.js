@@ -19,6 +19,39 @@ const {
 const AppError = require('./AppError');
 
 /**
+ * Function to return error response
+ *
+ */
+const errorResponse = ({ res, statusCode = httpStatus.INTERNAL_SERVER_ERROR, message, error }) => {
+    let responseObj = null;
+    let finalStatusCode = statusCode;
+
+    if (error instanceof mongoose.Error) {
+        [finalStatusCode, responseObj] = handleMongoErrors(error);
+    } else if (error instanceof Joi.ValidationError) {
+        [finalStatusCode, responseObj] = handleJoiErrors(error);
+    } else if (error instanceof AppError) {
+        finalStatusCode = error.statusCode;
+        responseObj = errorFormat({ ...error, error });
+    }
+
+    if (responseObj === null) {
+        const errorMessage = message || (error && error.message) || 'Something went wrong';
+        responseObj = errorFormat({ ...createServerError(errorMessage, true), error });
+    }
+
+    if (NODE_ENV !== 'test') {
+        appLogger.error({
+            msg: `[RESPONSE] ${res.req.method} ${res.req.originalUrl.split('?')[0]} :`,
+            error: responseObj,
+            statusCode: finalStatusCode,
+        });
+    }
+
+    return res.status(finalStatusCode).json(responseObj);
+};
+
+/**
  * Function to handle mongo errors
  *
  */
@@ -41,43 +74,6 @@ const handleJoiErrors = (e) => {
     responseObj = errorFormat({ ...createServerError(errorMessage, true), error });
 
     return [httpStatus.BAD_REQUEST, responseObj];
-};
-
-/**
- * Function to return error response
- *
- */
-const errorResponse = ({ res, statusCode = httpStatus.INTERNAL_SERVER_ERROR, message, error }) => {
-    let responseObj = null;
-    let finalStatusCode = statusCode;
-
-    if (error instanceof mongoose.Error) {
-        [finalStatusCode, responseObj] = handleMongoErrors(error);
-    }
-
-    if (error instanceof Joi.ValidationError) {
-        [finalStatusCode, responseObj] = handleJoiErrors(error);
-    }
-
-    if (error instanceof AppError) {
-        finalStatusCode = error.statusCode;
-        responseObj = errorFormat({ ...error, error });
-    }
-
-    if (responseObj === null) {
-        const errorMessage = message || (error && error.message) || 'Something went wrong';
-        responseObj = errorFormat({ ...createServerError(errorMessage, true), error });
-    }
-
-    if (NODE_ENV !== 'test') {
-        appLogger.error({
-            msg: `[RESPONSE] ${res.req.method} ${res.req.originalUrl.split('?')[0]} :`,
-            error: responseObj,
-            statusCode: finalStatusCode,
-        });
-    }
-
-    return res.status(finalStatusCode).json(responseObj);
 };
 
 module.exports = errorResponse;

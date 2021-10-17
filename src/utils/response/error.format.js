@@ -18,9 +18,6 @@ module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhr
         errorStack = stack && stack.split('\n').splice(0, 10).join('\n');
 
         if (error instanceof AppError) {
-            message = error.message;
-            errorCode = error.errorCode;
-            statusCode = error.statusCode;
             debugMessage = undefined;
             error = undefined;
         }
@@ -29,19 +26,19 @@ module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhr
     if (process.env.NODE_ENV === 'production') {
         return {
             status: 'FAILURE',
+            message,
             statusCode,
             statusPhrase,
             errorCode,
-            message,
             debugMessage,
         };
     } else {
         return {
             status: 'FAILURE',
+            message,
             statusCode,
             statusPhrase,
             errorCode,
-            message,
             debugMessage,
             error,
             stack: errorStack,

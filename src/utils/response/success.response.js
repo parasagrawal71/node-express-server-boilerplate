@@ -10,9 +10,9 @@ const { NODE_ENV } = require('config/config');
 const successResponse = ({ res, statusCode = httpStatus.OK, message, data }) => {
     const responseObj = {
         status: 'SUCCESS',
+        message,
         statusCode,
         statusPhrase: httpStatus[statusCode],
-        message,
         data,
     };
 
