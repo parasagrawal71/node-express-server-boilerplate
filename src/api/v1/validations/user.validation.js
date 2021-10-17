@@ -61,7 +61,7 @@ const updateUser = (req, res, next) => {
         return next(createBadRequestError('Request body cannot be empty'));
     }
 
-    // TODO: This validation not working as expected
+    // // TODO: This validation not working as expected
     // const validatedModel = UserModel(req.body).validateSync();
     // if (validatedModel instanceof Error) {
     //     return next(validatedModel);
