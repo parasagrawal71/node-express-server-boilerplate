@@ -14,6 +14,7 @@ const successResponse = ({ res, statusCode = 200, message, data }) => {
         appLogger.info({
             msg: `[RESPONSE] ${res.req.method} ${res.req.originalUrl.split('?')[0]} :`,
             info: responseObj,
+            statusCode,
         });
     }
 

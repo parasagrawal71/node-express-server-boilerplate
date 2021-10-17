@@ -9,6 +9,11 @@ module.exports = {
         MONGODB_URL: 'mongodb://127.0.0.1:27017/node-boilerplate',
     },
 
+    logger: {
+        DISABLE_CONSOLE_LOG: true,
+        SHOW_COMPLETE_ERROR_IN_CONSOLE: false,
+    },
+
     jwt: {
         // JWT secret key
         JWT_SECRET: 'thisisasamplesecret',

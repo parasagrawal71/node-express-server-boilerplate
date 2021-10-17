@@ -5,11 +5,10 @@ winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
 const chalk = require('chalk');
 const _ = require('lodash');
 
-const { getHttpMessage } = require('./httpConstants');
 const { isObject, isEmptyObject, isString, isEmptyArray, deepObject } = require('./helperFunctions');
-// const { DISABLE_CONSOLE_LOG, SHOW_COMPLETE_ERROR_IN_CONSOLE } = require("../config/config");
-const SHOW_COMPLETE_ERROR_IN_CONSOLE = false; // TODO: Move to appConfig. omit request and response from error
-const DISABLE_CONSOLE_LOG = false;
+const { logger, APP_NAME } = require('config/config');
+const httpStatus = require('http-status');
+const { DISABLE_CONSOLE_LOG, SHOW_COMPLETE_ERROR_IN_CONSOLE } = logger;
 
 /*
  *
@@ -40,13 +39,12 @@ winston.addColors(appConfig.colors);
  */
 const commonLogFormat = (log, isConsoleLog) => {
     const { timestamp, message, level } = log;
-    const serviceName = 'NODE-APP'; // todo: Read from config
 
     const requestId = rTracer.id();
     const requestIdFirstPart = requestId && requestId.split('-') && `${requestId.split('-')[0]}-x`;
     const firstHalfOfFirstLineOfLog = requestId
-        ? `[${serviceName}] [${timestamp}] [request-id: ${requestId}] [${level}]`
-        : `[${serviceName}] [${timestamp}] [${level}]`;
+        ? `[${APP_NAME}] [${timestamp}] [request-id: ${requestId}] [${level}]`
+        : `[${APP_NAME}] [${timestamp}] [${level}]`;
 
     if (level && level.includes('request')) {
         if (!isObject(message)) {
@@ -87,7 +85,7 @@ const commonLogFormat = (log, isConsoleLog) => {
         const isErrorLevel = level && level.includes('error');
         if (isObject(message)) {
             msg = message.msg;
-            message.error = _.omit(message.error, ['request', 'response']); // todo: check this
+            message.error = _.omit(message.error, ['request', 'response']); // TODO: check this
             errorOrInfo = isErrorLevel ? message.error : message.info;
         }
 
@@ -97,8 +95,8 @@ const commonLogFormat = (log, isConsoleLog) => {
             const { statusCode } = message;
             const is400Or500Series = String(statusCode).startsWith(4) || String(statusCode).startsWith(5);
             msg = isConsoleLog
-                ? `${msg} ${is400Or500Series ? chalk.red(statusCode) : chalk.green(statusCode)} ${getHttpMessage(statusCode)}`
-                : `${msg} ${statusCode} ${getHttpMessage(statusCode)}`;
+                ? `${msg} ${is400Or500Series ? chalk.red(statusCode) : chalk.green(statusCode)} ${httpStatus[statusCode]}`
+                : `${msg} ${statusCode} ${httpStatus[statusCode]}`;
             firstLineOfDBLog = `${firstHalfOfFirstLineOfLog}${' '.repeat(isInfoOrWarnLevel ? 4 : 3)}: ${msg}`;
         } else {
             firstLineOfDBLog = `${firstHalfOfFirstLineOfLog}${' '.repeat(isInfoOrWarnLevel ? 4 : 3)}: ${msg}`;
