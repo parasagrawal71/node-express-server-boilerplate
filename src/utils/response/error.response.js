@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const Joi = require('joi');
 const httpStatus = require('http-status');
 
+// CUSTOM IMPORTS
 const { NODE_ENV } = require('config/config');
 const {
     errorFormat,
@@ -14,8 +16,13 @@ const {
     createServerError,
     createUnauthorizedError,
 } = require('./error.format');
+const AppError = require('./AppError');
 
-const handleMongoError = (e) => {
+/**
+ * Function to handle mongo errors
+ *
+ */
+const handleMongoErrors = (e) => {
     let responseObj = e;
     if (e && e.name === 'ValidationError' && e.errors && Object.keys(e.errors).length > 0) {
         responseObj = errorFormat({ ...createBadRequestError('', true), error: e }); // todo: error message
@@ -24,17 +31,37 @@ const handleMongoError = (e) => {
     return [httpStatus.BAD_REQUEST, responseObj];
 };
 
+/**
+ * Function to handle joi errors
+ *
+ */
+const handleJoiErrors = (e) => {
+    let responseObj = e;
+
+    responseObj = errorFormat({ ...createServerError(errorMessage, true), error });
+
+    return [httpStatus.BAD_REQUEST, responseObj];
+};
+
+/**
+ * Function to return error response
+ *
+ */
 const errorResponse = ({ res, statusCode = httpStatus.INTERNAL_SERVER_ERROR, message, error }) => {
     let responseObj = null;
     let finalStatusCode = statusCode;
 
-    if (error.errorType === 'CUSTOM') {
-        finalStatusCode = error.statusCode;
-        responseObj = errorFormat({ ...error, error });
+    if (error instanceof mongoose.Error) {
+        [finalStatusCode, responseObj] = handleMongoErrors(error);
     }
 
-    if (error instanceof mongoose.Error) {
-        [finalStatusCode, responseObj] = handleMongoError(error);
+    if (error instanceof Joi.ValidationError) {
+        [finalStatusCode, responseObj] = handleJoiErrors(error);
+    }
+
+    if (error instanceof AppError) {
+        finalStatusCode = error.statusCode;
+        responseObj = errorFormat({ ...error, error });
     }
 
     if (responseObj === null) {

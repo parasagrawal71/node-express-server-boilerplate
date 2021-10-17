@@ -1,9 +1,12 @@
-const { APP_ID } = require('config/config');
 const httpStatus = require('http-status');
+
+// CUSTOM IMPORTS
+const { APP_ID } = require('config/config');
 const AppError = require('./AppError');
 
 /**
- * @description Function to return formatted error object
+ * Function to return formatted error object
+ *
  */
 module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhrase }) => {
     let debugMessage = error && error.message;
@@ -14,7 +17,7 @@ module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhr
         const { stack } = error;
         errorStack = stack && stack.split('\n').splice(0, 10).join('\n');
 
-        if (error.errorType === 'CUSTOM') {
+        if (error instanceof AppError) {
             message = error.message;
             errorCode = error.errorCode;
             statusCode = error.statusCode;
@@ -47,7 +50,8 @@ module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhr
 };
 
 /**
- * @description Unauthorized error
+ * Unauthorized error
+ *
  */
 module.exports.createUnauthorizedError = (isFormat = false) => {
     const unauthorizedError = {
@@ -64,7 +68,8 @@ module.exports.createUnauthorizedError = (isFormat = false) => {
 };
 
 /**
- * @description Required Parameter Error
+ * Required Parameter Error
+ *
  */
 module.exports.createRequiredParamError = (missingKey, isFormat = false) => {
     const requiredParamError = {
@@ -82,7 +87,8 @@ module.exports.createRequiredParamError = (missingKey, isFormat = false) => {
 };
 
 /**
- * @description Invalid Parameter type error
+ * Invalid Parameter type error
+ *
  */
 module.exports.createInvalidTypeError = (key, isFormat = false) => {
     const invalidTypeError = {
@@ -100,7 +106,8 @@ module.exports.createInvalidTypeError = (key, isFormat = false) => {
 };
 
 /**
- * @description Invalid Parameter format error
+ * Invalid Parameter format error
+ *
  */
 module.exports.createInvalidFormatError = (key, isFormat = false) => {
     const invalidFormatError = {
@@ -118,7 +125,8 @@ module.exports.createInvalidFormatError = (key, isFormat = false) => {
 };
 
 /**
- * @description Invalid Parameter value error
+ * Invalid Parameter value error
+ *
  */
 module.exports.createInvalidValueError = (key, isFormat = false) => {
     const invalidValueError = {
@@ -136,7 +144,8 @@ module.exports.createInvalidValueError = (key, isFormat = false) => {
 };
 
 /**
- * @description Duplicate value error
+ * Duplicate value error
+ *
  */
 module.exports.createDuplicateValueError = (key, value, isFormat = false) => {
     const duplicateValueError = {
@@ -154,7 +163,8 @@ module.exports.createDuplicateValueError = (key, value, isFormat = false) => {
 };
 
 /**
- * @description Record not found error
+ * Record not found error
+ *
  */
 module.exports.createRecordNotFoundError = (key, value, isFormat = false) => {
     const recordNotFoundError = {
@@ -172,7 +182,8 @@ module.exports.createRecordNotFoundError = (key, value, isFormat = false) => {
 };
 
 /**
- * @description Bad request error
+ * Bad request error
+ *
  */
 module.exports.createBadRequestError = (message, isFormat = false) => {
     const badRequestError = {
@@ -190,7 +201,8 @@ module.exports.createBadRequestError = (message, isFormat = false) => {
 };
 
 /**
- * @description Server error
+ * Server error
+ *
  */
 module.exports.createServerError = (message, isFormat = false) => {
     const serverError = {

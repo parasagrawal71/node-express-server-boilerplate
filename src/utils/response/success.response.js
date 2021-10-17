@@ -1,7 +1,13 @@
-const { NODE_ENV } = require('config/config');
 const httpStatus = require('http-status');
 
-const successResponse = ({ res, statusCode = 200, message, data }) => {
+// CUSTOM IMPORTS
+const { NODE_ENV } = require('config/config');
+
+/**
+ * Function to return succes response
+ *
+ */
+const successResponse = ({ res, statusCode = httpStatus.OK, message, data }) => {
     const responseObj = {
         status: 'SUCCESS',
         statusCode,
