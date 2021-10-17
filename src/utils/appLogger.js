@@ -1,13 +1,14 @@
 const winston = require('winston');
 const { format } = require('winston');
 const rTracer = require('cls-rtracer');
+const httpStatus = require('http-status');
 winston.transports.DailyRotateFile = require('winston-daily-rotate-file');
 const chalk = require('chalk');
 const _ = require('lodash');
 
-const { isObject, isEmptyObject, isString, isEmptyArray, deepObject } = require('./helperFunctions');
+// CUSTOM IMPORTS
+const { isObject, isEmptyObject, isString, isEmptyArray, deepObject } = require('utils/helperFunctions');
 const { logger, APP_NAME } = require('config/config');
-const httpStatus = require('http-status');
 const { DISABLE_CONSOLE_LOG, SHOW_COMPLETE_ERROR_IN_CONSOLE } = logger;
 
 /*
