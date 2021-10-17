@@ -7,12 +7,6 @@ module.exports = {
     database: {
         // URL of the Mongo DB
         MONGODB_URL: 'mongodb://127.0.0.1:27017/node-boilerplate',
-        mongooseOptions: {
-            //TODO: move to db.connect
-            useCreateIndex: true,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        },
     },
 
     jwt: {

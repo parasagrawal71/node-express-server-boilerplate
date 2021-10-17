@@ -25,7 +25,7 @@ UserModel.plugin(paginate);
  * Check if email is taken
  * @param {string} email - The user's email
  * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
- * @returns {Promise<boolean>}
+ * @returns {Boolean} - is email already exists or not
  */
 UserModel.statics.isEmailTaken = async function (email, excludeUserId) {
     const user = await this.findOne({ email, _id: { $ne: excludeUserId } });

@@ -1,5 +1,5 @@
 const { UserModel } = require('api/v1/models');
-const { createDuplicateValueError, createRecordNotFoundError } = require('utils/response');
+const { createRecordNotFoundError } = require('utils/response');
 
 /**
  * Create a user
@@ -7,10 +7,6 @@ const { createDuplicateValueError, createRecordNotFoundError } = require('utils/
  * @returns {Promise<User>}
  */
 const createUser = async (userBody) => {
-    if (await UserModel.isEmailTaken(userBody.email)) {
-        throw createDuplicateValueError('email', userBody.email);
-    }
-
     return UserModel.create(userBody);
 };
 
@@ -21,7 +17,7 @@ const createUser = async (userBody) => {
  * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
  * @param {number} [options.limit] - Maximum number of results per page (default = 10)
  * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>} // todo:
+ * @returns {Array<QueryResult>}
  */
 const queryUsers = async (filter, options) => {
     const users = await UserModel.paginate(filter, options);
@@ -50,19 +46,14 @@ const getUserByEmail = async (email) => {
  * Update user by id
  * @param {ObjectId} userId
  * @param {Object} updateBody
- * @returns {Promise<User>}
+ * @returns {Object<User>}
  */
 const updateUserById = async (userId, updateBody) => {
-    const user = await getUserById(userId);
+    const user = await UserModel.findOneAndUpdate({ _id: userId }, updateBody);
     if (!user) {
         throw createRecordNotFoundError('id', userId);
     }
-    if (updateBody.email && (await UserModel.isEmailTaken(updateBody.email, userId))) {
-        throw createDuplicateValueError('email', updateBody.email);
-    }
 
-    Object.assign(user, updateBody);
-    await user.save(); // todo findOneAndUpdate?
     return user;
 };
 

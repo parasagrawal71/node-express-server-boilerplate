@@ -11,11 +11,12 @@ const rTracer = require('cls-rtracer');
 const { authLimiter } = require('./middlewares/rateLimiter');
 
 // CUSTOM IMPORTS
-const apiV1Router = require('./api/api-v1.router');
-const { logIncomingRequests } = require('./middlewares/logRequests');
-const { errorResponse } = require('./utils/response');
-const { connectDatabase } = require('./utils/db.connect');
-const { APP_NAME, APP_PORT } = require('./config/config');
+const apiV1Router = require('api/api-v1.router');
+const { logIncomingRequests } = require('middlewares/logRequests');
+const { errorResponse } = require('utils/response');
+const { connectDatabase } = require('utils/db.connect');
+const { APP_NAME, APP_PORT } = require('config/config');
+const { appLogger } = require('utils/appLogger');
 
 /*
  *
@@ -67,7 +68,7 @@ if (config.env === 'production') {
 app.use('/api/v1', logIncomingRequests, apiV1Router);
 
 app.get('/healthcheck', logIncomingRequests, (req, res) => {
-    res.send('Active');
+    res.send('Healthy');
 });
 
 app.get('/', logIncomingRequests, (req, res) => {
@@ -79,30 +80,30 @@ app.all('/*', logIncomingRequests, (req, res) => {
     errorResponse({ res, statusCode: 404, message: `Can't find ${req.method} ${req.originalUrl} on the server!` });
 });
 
-app.use((error, req, res, next) => {
-    // Error Middleware:
-    // err, req, res, and next. As long as we have these four arguments,
-    // Express will recognize the middleware as an error handling middleware.
-    errorResponse({ res, error });
-});
-
 /*
  *
  * ************************************* Process Events and Error handling ********************************** //
  */
-process.on('unhandledRejection', (promise, reason) => {
-    appLogger.error('------------------------ unhandledRejection Error ----------------------');
-    appLogger.error({ msg: `Unhandled Rejection at: ${promise}; reason: ${reason}` });
+
+app.use((error, req, res, next) => {
+    // Error Middleware:
+    // error, req, res, and next. As long as we have these four arguments,
+    // Express will recognize the middleware as an error handling middleware.
+    errorResponse({ res, error });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    appLogger.error('------------------------ unhandledRejection error ----------------------');
+    appLogger.error({ msg: `Unhandled Rejection at: ${promise}; reason: ${reason.stack}` });
     appLogger.error('------------------------------------------------------------------------');
-    exitHandler();
+    setTimeout(() => closeServer(), 1000);
 });
 
 process.on('uncaughtException', (error, origin) => {
-    appLogger.error('------------------------ uncaughtException Error -----------------------');
-    appLogger.error({ msg: `uncaughtException error @ ${origin}`, error });
-    // console.log(error); // todo: this prints the error
+    appLogger.error('------------------------ uncaughtException error -----------------------');
+    appLogger.error({ msg: `uncaughtException error at origin = ${origin}`, error });
     appLogger.error('------------------------------------------------------------------------');
-    exitHandler();
+    setTimeout(() => closeServer(), 1000);
 });
 
 let server;
@@ -112,10 +113,10 @@ connectDatabase().then(() => {
     });
 });
 
-const exitHandler = () => {
+const closeServer = () => {
     if (server) {
         server.close(() => {
-            appLogger.info('Server closed');
+            appLogger.debug('Server closed');
             process.exit(1);
         });
     } else {
@@ -124,10 +125,10 @@ const exitHandler = () => {
 };
 
 function signalProcessCallback(signal) {
-    appLogger.debug(`Server closed by ${signal === 'SIGTERM' ? 'killing Process' : 'pressing Ctrl+C'}`);
     if (server) {
         server.close();
     }
+    appLogger.debug(`Server closed by ${signal === 'SIGTERM' ? 'killing process' : 'pressing Ctrl + C'}`);
 }
 
 process.on('SIGINT', signalProcessCallback);

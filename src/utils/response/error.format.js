@@ -2,10 +2,6 @@ const { APP_ID } = require('config/config');
 const httpStatus = require('http-status');
 const AppError = require('./AppError');
 
-// TODO: Add create Mongo Error
-// const mongoose = require('mongoose');
-// if (error instanceof mongoose.Error)
-
 /**
  * @description Function to return formatted error object
  */

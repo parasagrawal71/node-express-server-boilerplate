@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { database } = require('../config/config');
-const { appLogger } = require('./appLogger');
+const { database } = require('config/config');
+const { appLogger } = require('utils/appLogger');
 
 module.exports.connectDatabase = () => {
     return mongoose
@@ -14,10 +14,16 @@ module.exports.connectDatabase = () => {
             appLogger.debug('Successfully connected to the database');
         })
         .catch((error) => {
-            appLogger.error({ msg: 'Could not connect to the database.', error });
-            // appLogger.error({ msg: "Could not connect to the database. Exiting now...", error });
-            // process.exit();
+            appLogger.error({ msg: 'Could not connect to the database. Shutting down server now...', error });
+            process.exit(1);
         });
+};
+
+const closeDatabase = () => {
+    mongoose.connection.close(() => {
+        appLogger.debug('Database connection disconnected through app termination');
+        process.exit(0); // REQUIRED
+    });
 };
 
 /*
@@ -26,23 +32,19 @@ module.exports.connectDatabase = () => {
  */
 // When successfully connected
 mongoose.connection.on('connected', () => {
-    appLogger.debug('Mongoose connection opened');
+    appLogger.debug('Database connection opened');
 });
 
 // If the connection throws an error
 mongoose.connection.on('error', (error) => {
-    // appLogger.error({ msg: "Mongoose connection error: ", error });
+    // appLogger.error({ msg: "Database connection error: ", error });
 });
 
 // When the connection is disconnected
 mongoose.connection.on('disconnected', () => {
-    appLogger.debug('Mongoose connection disconnected');
+    appLogger.debug('Database connection disconnected');
 });
 
-// If the Node process ends, close the Mongoose connection
-process.on('SIGINT', () => {
-    mongoose.connection.close(() => {
-        appLogger.debug('Mongoose connection disconnected through app termination');
-        process.exit(0); // REQUIRED
-    });
-});
+// If the Node process ends, close the database connection
+process.on('SIGINT', closeDatabase);
+process.on('SIGTERM', () => closeDatabase);
