@@ -2,13 +2,15 @@ const express = require('express');
 const { authenticateRequests } = require('../middlewares/authenticateRequests');
 
 // IMPORT OF ROUTER TO ALL RESOURCES
-const userRouter = require('./v1/routes/user.route');
-const docsRouter = require('./v1/routes/docs.route');
+const { authRouter, userRouter, docsRouter } = require('./v1/routes');
 
-const apiRouter = express.Router();
+const router = express.Router();
 
 // ROUTER TO ALL RESOURCES
-apiRouter.use('/users', userRouter); // authenticateRequests
-apiRouter.use('/docs', docsRouter);
+router.use('/users', userRouter); // authenticateRequests
+router.use('/auth', authRouter);
+if (process.env.NODE_ENV === 'development') {
+    router.use('/docs', docsRouter);
+}
 
-module.exports = apiRouter;
+module.exports = router;
