@@ -12,6 +12,6 @@ yarn-error.log
 coverage
 
 # Custom
-dist-src
+build
 logs
 src/config/env/local.js
