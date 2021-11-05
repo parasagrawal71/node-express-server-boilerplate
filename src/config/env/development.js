@@ -2,6 +2,7 @@ module.exports = {
     HOST_URL: 'http://localhost:5100/api/v1',
     FRONTEND_URL: 'http://localhost:4000/dashboard',
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    JSON_PLACEHOLDER_HOST: `https://jsonplaceholder.typicode.com`,
 
     logger: {
         DISABLE_CONSOLE_LOG: false,

@@ -1,9 +1,9 @@
 const { UserModel } = require('api/v1/models');
 const { successResponse, createBadRequestError, createRecordNotFoundError, createRequiredParamError } = require('utils/response');
-const { sendMail } = require('utils/send-mail');
+const { sendMail } = require('utils/email');
 const { randomNumbers } = require('utils/helperFunctions');
-const { verifyEmailByOtpTemplate } = require('api/v1/email-templates/verify-email-by-otp');
-const { accountVerificationTemplate } = require('api/v1/email-templates/account-verification');
+const { verifyEmailByOtpTemplate } = require('api/v1/emailTemplates/verify-email-by-otp');
+const { accountVerificationTemplate } = require('api/v1/emailTemplates/account-verification');
 const { signJwtToken } = require('api/v1/helpers/auth.helper');
 const catchAsync = require('utils/catchAsync');
 

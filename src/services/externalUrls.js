@@ -1,25 +1,22 @@
-// const {} = require("config/config")
+const { JSON_PLACEHOLDER_HOST } = require('config/config');
 
 // ******************************************************************************************************** //
-// *************************************** 'xyz SERVICE' endpoints ************************************* //
+// ************************************* 'JSON PLACEHOLDER' endpoints ************************************* //
 // ******************************************************************************************************** //
-const XYZ_HOST = '';
-module.exports.xyzUrls = () => ({
-    resource: {
-        host: XYZ_HOST,
-        method: 'POST',
-        endpoint: '/resource',
+module.exports.jsonPlaceholderUrls = (postId) => ({
+    getAll: {
+        host: JSON_PLACEHOLDER_HOST,
+        method: 'GET',
+        endpoint: `/posts`,
     },
-});
-
-// ******************************************************************************************************** //
-// ********************************** 'abc SERVICE' endpoints ************************************* //
-// ******************************************************************************************************** //
-const ABC_HOST = '';
-module.exports.abcUrls = (variable) => ({
-    resource: {
-        host: ABC_HOST,
+    getById: {
+        host: JSON_PLACEHOLDER_HOST,
+        method: 'GET',
+        endpoint: `/posts/${postId}`,
+    },
+    post: {
+        host: JSON_PLACEHOLDER_HOST,
         method: 'POST',
-        endpoint: `/resource/${variable}`,
+        endpoint: `/posts`,
     },
 });

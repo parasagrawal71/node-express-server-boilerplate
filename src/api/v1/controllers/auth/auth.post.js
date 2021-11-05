@@ -4,8 +4,8 @@ const { authHelper } = require('api/v1/helpers');
 const { successResponse, createBadRequestError, errorResponse } = require('utils/response');
 const { randomNumbers } = require('utils/helperFunctions');
 const { UserModel } = require('api/v1/models');
-const { accountVerificationTemplate } = require('../../email-templates/account-verification');
-const { sendMail } = require('utils/send-mail');
+const { accountVerificationTemplate } = require('../../emailTemplates/account-verification');
+const { sendMail } = require('utils/email');
 
 /**
  * Controller to register new user

@@ -4,10 +4,8 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const cors = require('cors');
-// const passport = require('passport');
 const config = require('./config/config');
 const rTracer = require('cls-rtracer');
-// const { jwtStrategy } = require('./config/passport');
 const { authLimiter } = require('./middlewares/rateLimiter');
 
 // CUSTOM IMPORTS
@@ -50,10 +48,6 @@ app.use(mongoSanitize());
 
 // gzip compression
 app.use(compression());
-
-// // jwt authentication
-// app.use(passport.initialize());
-// passport.use('jwt', jwtStrategy);
 
 // limit repeated failed requests to auth endpoints
 if (config.env === 'production') {
