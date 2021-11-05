@@ -13,16 +13,15 @@ module.exports = {
         SHOW_COMPLETE_ERROR_IN_CONSOLE: false,
     },
 
-    jwt: {
-        // JWT secret key
-        JWT_SECRET: 'thisisasamplesecret',
-        // Number of minutes after which an access token expires
-        JWT_ACCESS_EXPIRATION_MINUTES: 30,
-        // Number of days after which a refresh token expires
-        JWT_REFRESH_EXPIRATION_DAYS: 30,
-        // Number of minutes after which a reset password token expires
-        JWT_RESET_PASSWORD_EXPIRATION_MINUTES: 10,
-        // Number of minutes after which a verify email token expires
-        JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: 10,
-    },
+    // JWT secret key
+    JWT_SECRET: 'thisisasamplesecret',
+    // Number of minutes after which an access token expires
+    JWT_ACCESS_EXPIRATION_MINUTES: 30,
+    // Number of days after which a refresh token expires
+    JWT_REFRESH_EXPIRATION_DAYS: 30,
+    // Number of minutes after which a reset password token expires
+    JWT_RESET_PASSWORD_EXPIRATION_MINUTES: 10,
+    // Number of minutes after which a verify email token expires
+    JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: 10,
+    JWT_ISSUED_BY: '',
 };

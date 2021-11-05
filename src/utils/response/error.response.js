@@ -115,12 +115,12 @@ const handleMongoErrors = (e) => {
 
     // ImmutableField
     else if (e.code === 66) {
-        responseObj = errorFormat({ ...createBadRequestError("Cannot modify the immutable field '_id'", true), error: e });
+        responseObj = errorFormat({ ...createBadRequestError("Cannot modify the immutable field '_id'", null, true), error: e });
     }
 
     // If no condition matches
     else if (responseObj === null) {
-        responseObj = errorFormat({ ...createBadRequestError(e.message, true), error: e });
+        responseObj = errorFormat({ ...createBadRequestError(e.message, null, true), error: e });
     }
 
     return [httpStatus.BAD_REQUEST, responseObj];

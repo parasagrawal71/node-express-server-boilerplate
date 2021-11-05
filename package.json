@@ -33,10 +33,10 @@
         "watch:dev": "nodemon"
     },
     "nodemonConfig": {
-      "exec": "npm run serve:dev",
-      "watch": [
-        "src/*"
-      ]
+        "exec": "npm run serve:dev",
+        "watch": [
+            "src/*"
+        ]
     },
     "keywords": [
         "node",
@@ -66,10 +66,12 @@
         "@babel/plugin-transform-runtime": "^7.15.8",
         "@babel/preset-env": "^7.15.8",
         "@babel/runtime": "^7.15.4",
+        "@sendgrid/mail": "^7.5.0",
         "ajv": "^8.6.3",
         "ajv-errors": "^3.0.0",
         "ajv-formats": "^2.1.1",
         "ajv-keywords": "^5.0.0",
+        "axios": "^0.23.0",
         "babel-plugin-module-resolver": "^4.1.0",
         "bcryptjs": "^2.4.3",
         "cls-hooked": "^4.2.2",
@@ -82,6 +84,7 @@
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.0.0",
         "express-rate-limit": "^5.0.0",
+        "google-auth-library": "^7.10.2",
         "helmet": "^4.1.0",
         "http-status": "^1.4.0",
         "joi": "^17.3.0",
@@ -93,6 +96,7 @@
         "nodemailer": "^6.3.1",
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
+        "path": "^0.12.7",
         "pm2": "^5.1.0",
         "swagger-jsdoc": "^6.0.8",
         "swagger-ui-express": "^4.1.6",

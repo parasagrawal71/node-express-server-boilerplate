@@ -19,7 +19,7 @@ const UserModel = new Schema(
         },
         password: { type: String, private: true },
         isVerified: { type: Boolean, default: false },
-        otp: { type: String },
+        otp: { type: String, private: true },
     },
     { timestamps: true }
 );

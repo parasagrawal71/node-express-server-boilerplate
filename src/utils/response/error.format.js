@@ -8,8 +8,8 @@ const AppError = require('./AppError');
  * Function to return formatted error object
  *
  */
-module.exports.errorFormat = ({ message, errorCode, error, statusCode, statusPhrase }) => {
-    let debugMessage = error && error.message;
+module.exports.errorFormat = ({ message, debugMessage, errorCode, error, statusCode, statusPhrase }) => {
+    debugMessage = debugMessage || (error && error.message);
     let errorStack = undefined;
 
     // Trim error stack lines to 10
@@ -186,9 +186,9 @@ module.exports.createRecordNotFoundError = (key, value, isFormat = false) => {
  * Bad request error
  *
  */
-module.exports.createBadRequestError = (message, isFormat = false) => {
+module.exports.createBadRequestError = (message, errorCode, isFormat = false) => {
     const badRequestError = {
-        errorCode: `E_${APP_ID}_BAD_REQUEST`,
+        errorCode: errorCode || `E_${APP_ID}_BAD_REQUEST`,
         message,
         statusCode: httpStatus.BAD_REQUEST,
         statusPhrase: httpStatus[httpStatus.BAD_REQUEST],
