@@ -4,17 +4,28 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const compression = require('compression');
 const cors = require('cors');
-const config = require('./config/config');
 const rTracer = require('cls-rtracer');
-const { authLimiter } = require('./middlewares/rateLimiter');
+const { utilConfig } = require('@parasagrawal71/paras-utils');
+const { logRequests } = require('@parasagrawal71/paras-utils').middlewares;
+const { appLogger, connectDatabase } = require('@parasagrawal71/paras-utils').utils;
 
 // CUSTOM IMPORTS
 const apiV1Router = require('api/api-v1.router');
-const { logIncomingRequests } = require('middlewares/logRequests');
 const { errorResponse } = require('utils/response');
-const { connectDatabase } = require('utils/db.connect');
-const { APP_NAME, APP_PORT } = require('config/config');
-const { appLogger } = require('utils/appLogger');
+const config = require('config/config');
+const { authLimiter } = require('middlewares/rateLimiter');
+
+utilConfig.set({
+    NODE_ENV: config.NODE_ENV,
+    APP_NAME: config.APP_NAME,
+    DISABLE_CONSOLE_LOG: config.DISABLE_CONSOLE_LOG,
+    SHOW_COMPLETE_ERROR_IN_CONSOLE: config.SHOW_COMPLETE_ERROR_IN_CONSOLE,
+    MONGODB_URL: config.database.MONGODB_URL,
+    SENDGRID_API_KEY: config.SENDGRID_API_KEY,
+    DEFAULT_SENDER: config.DEFAULT_SENDER,
+});
+
+const { APP_NAME, APP_PORT } = config;
 
 /*
  *
@@ -50,7 +61,7 @@ app.use(mongoSanitize());
 app.use(compression());
 
 // limit repeated failed requests to auth endpoints
-if (config.env === 'production') {
+if (config.NODE_ENV === 'production') {
     app.use('/api/v1/auth', authLimiter);
 }
 
@@ -59,18 +70,18 @@ if (config.env === 'production') {
  * ****************************************** Routers and Routes ******************************************** //
  */
 // v1 api routes
-app.use('/api/v1', logIncomingRequests, apiV1Router);
+app.use('/api/v1', logRequests, apiV1Router);
 
-app.get('/healthcheck', logIncomingRequests, (req, res) => {
+app.get('/healthcheck', logRequests, (req, res) => {
     res.send('Healthy');
 });
 
-app.get('/', logIncomingRequests, (req, res) => {
+app.get('/', logRequests, (req, res) => {
     res.send(`Welcome to ${APP_NAME} Server!`);
 });
 
 // send back a 404 error for any unknown api request
-app.all('/*', logIncomingRequests, (req, res) => {
+app.all('/*', logRequests, (req, res) => {
     errorResponse({ res, statusCode: 404, message: `Can't find ${req.method} ${req.originalUrl} on the server!` });
 });
 

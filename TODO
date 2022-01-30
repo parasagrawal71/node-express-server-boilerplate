@@ -1,0 +1,84 @@
+
+// const { validate } = require('../utils/ajv.validation');
+
+// const envVarsSchema = {
+//     type: 'object',
+//     properties: {
+//         NODE_ENV: {
+//             type: 'string',
+//             enum: ['production', 'development', 'test'],
+//         },
+//         PORT: {
+//             type: 'number',
+//         },
+//         MONGODB_URL: {
+//             type: 'string',
+//             isNotEmpty: true,
+//             errorMessage: {
+//                 isNotEmpty: `MONGODB_URL can't be empty`,
+//             },
+//         },
+//     },
+//     required: ['NODE_ENV', 'PORT', 'MONGODB_URL'],
+// };
+
+// const envVars = process.env;
+
+// validate(envVarsSchema, envVars);
+
+
+
+
+--------------
+--------------
+--------------
+
+Create .env, .env.development, .env.production, .env.local files to read config and set in config/config
+Validation
+Testing
+Documentation
+Role and Rights
+
+
+
+
+
+
+
+-> Create own boilerplate. So that can be installed using command
+-> Local env file which is not pushed to git and have the highest priority
+-> bootstrap file
+-> In memory. redis, etc
+-> socket
+-> async retry
+-> Cleanup package.json and its script
+
+
+
+
+css autoprefixer and reset, tests, styled-components, etc.
+bull: https://github.com/OptimalBits/bull
+https://www.npmjs.com/package/mongo-sanitize
+https://github.com/jsdoc/jsdoc
+https://flawsomedev.com/posts/secure-nodejs-restapi-boilerplate/
+	const allowedOrigins = ["localhost"]; //list of allowed domains
+	module.exports = (req, res, next) => {
+	  let isDomainAllowed = allowedOrigins.indexOf(req.hostname) !== -1;
+	  if (!isDomainAllowed)
+	    return res.status(403).json({
+	      message: "Access Restricted"
+	    });
+	  next();
+	};
+	+  app.use(restrictOrigin);
+
+
+
+-------
+LATER:-
+-------
+-> ajv or joi validation ? If ajv, extending it
+-> omit few fields in logger
+-> script to create api folder with basic apis, helpers, validators file, etc
+-> node start scripts
+-> jest vs mocha. If jest:- check-leaks option

@@ -40,21 +40,24 @@ const logResponse = (type, responseOrError, apiResource) => {
     ------------------
 
     Syntax:
-        requestExternalService(xyzUrls().resource, JSON.stringify({ keyName: value }), {
+        requestExternalService(xyzUrls.resource().type, JSON.stringify({ keyName: value }), {
             params: { paramName: "paramValue" },
             headers: { headerName: "headerValue" },
         })
 
     Example:
-        requestExternalService(xyzUrls().resource)
-        requestExternalService(xyzUrls("variable_value").resource)
+        requestExternalService(xyzUrls.resource().type)
+        requestExternalService(xyzUrls.resource({ key: "variable_value" }).type)
 */
 module.exports.requestExternalService = (apiResource, requestBody = {}, { params = {}, headers = {}, ...restConfig } = {}) => {
-    const { host, endpoint } = apiResource;
+    const { host, endpoint, skipLogReqBody } = apiResource;
     let { method } = apiResource;
     method = method && method.toUpperCase();
 
-    appLogger.info({ msg: `Requesting external service, ${method} ${endpoint}`, info: { requestBody, params, headers, restConfig } });
+    appLogger.info({
+        msg: `Requesting external service, ${method} ${endpoint}`,
+        info: { requestBody: !skipLogReqBody ? requestBody : 'SKIPPED', params, headers, restConfig },
+    });
 
     return axios
         .request({
@@ -63,6 +66,7 @@ module.exports.requestExternalService = (apiResource, requestBody = {}, { params
             url: endpoint,
             params,
             headers,
+            data: requestBody,
             ...(restConfig || {}),
         })
         .then((response) => {
